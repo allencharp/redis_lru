@@ -92,7 +92,7 @@ class LruCache(object):
 
     def status(self):
         used_status = """
-            Single process cache used status:
+             cache used status:
                 max:%s
                 used:%s
                 key:%s
