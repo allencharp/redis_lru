@@ -66,8 +66,8 @@ class LruCache(object):
 
     def put(self, key, val):
         with self.lock:
+            self.redis.hset(CACHE_STORE, key, val)
             if self.redis.hexists(CACHE_STORE, key):
-                self.redis.hset(CACHE_STORE, key, val)
                 self.__lru_key(old_key=key, new_key=key)
                 return
 
@@ -75,8 +75,6 @@ class LruCache(object):
             if int(used) == self.item_max:
                 r_key = self.redis.rpop(CACHE_KEY)
                 self.redis.hdel(CACHE_STORE, r_key)
-
-                self.redis.hset(CACHE_STORE, key, val)
                 self.redis.hincrby(CACHE_STATE, 'removed')
                 self.__lru_key(old_key=r_key, new_key=key)
             else:
